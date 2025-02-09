@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<!-- static/import.html -->
+<th:block th:fragment="static-resources">
+	<!-- CSS 파일 임포트 
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap.rtl.css}">
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap.rtl.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap-grid.css}">
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap-grid.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap-reboot.css}">
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap-reboot.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap-utilities.css}">
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap-utilities.min.css}">
+    
+    <link rel="stylesheet" th:href="@{/static/css/font.css}">
+
+    <script th:src="@{/static/js/bootstrap.bundle.js}"></script>
+    <script th:src="@{/static/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/static/js/bootstrap.esm.js}"></script>
+    <script th:src="@{/static/js/bootstrap.esm.min.js}"></script>
+    <script th:src="@{/static/js/bootstrap.js}"></script>
+    <script th:src="@{/static/js/bootstrap.min.js}"></script>
+    -->
+	<!-- admin 임포트 -->
+	<link rel="stylesheet"
+		th:href="@{/static/admin/css/sb-admin-2.min.css}">
+	<link
+		th:href="@{/static/admin/vendor/fontawesome-free/css/all.min.css}"
+		rel="stylesheet" type="text/css">
+	<!-- Bootstrap core JavaScript-->
+	<script th:src="@{/static/admin/vendor/jquery/jquery.min.js}"></script>
+	<script
+		th:src="@{/static/admin/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+	<!-- Core plugin JavaScript-->
+	<script
+		th:src="@{/static/admin/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+	<!-- Custom scripts for all pages-->
+	<script th:src="@{/static/admin/js/sb-admin-2.min.js}"></script>
+
+	<!-- Page level plugins -->
+	<!-- <script th:src="@{/static/admin/vendor/chart.js/Chart.min.js}"></script> -->
+
+	<!-- Page level custom scripts -->
+	<!--  <script th:src="@{/static/admin/js/demo/chart-area-demo.js}"></script>
+    <script th:src="@{/static/admin/js/demo/chart-pie-demo.js}"></script> -->
+	<!-- axios -->
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+	<!-- toast grid -->
+	<script th:src="@{/static/lib/toast/grid/tui-grid.js}"></script>
+	<link rel="stylesheet" th:href="@{/static/lib/toast/grid/tui-grid.css}">
+	<!-- micromodal -->
+	<script th:src="@{/static/lib/modal/micromodal.min.js}"></script>
+	<link rel="stylesheet" th:href="@{/static/lib/modal/modal.css}">
+
+	<script th:src="@{/static/commonJS/common_JS.js}"></script>
+	<script th:src="@{/static/commonJS/modal_JS.js}"></script>
+	<script th:src="@{/static/commonJS/el_JS.js}"></script>
+</th:block>
+</head>
+</html>

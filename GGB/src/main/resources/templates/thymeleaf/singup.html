@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<th:block th:replace="~{import :: static-resources}"></th:block>
+<script type="text/javascript">
+	$el.ready(function(){
+		init();
+	})
+	let chkId = 'N'
+	function init(){
+		$el.$('#id').on('change', function(e){
+			$el.$('#chkIdBtn').enable();
+		})
+		let pass = $el.$('#pass')
+		let passChk = $el.$('#passChk')
+		function chkPassFn(e){
+			if(pass.val() && passChk.val() && pass.val() != passChk.val()){
+				pass.css({'boxShadow': '0 0 0 0.2rem rgba(255, 0, 0, 0.25)'});
+				passChk.css({'boxShadow': '0 0 0 0.2rem rgba(255, 0, 0, 0.25)'});
+			} else {
+				pass.css({'boxShadow': ''});
+				passChk.css({'boxShadow': ''});
+			}
+		}
+		pass.on('focusout', chkPassFn);
+		passChk.on('focusout', chkPassFn);
+	}
+	
+	function chkLoginId(){
+		let id = $el.$('#id').val();
+		if(!id){
+			$modal.show();
+			$modal.setModal({
+				'title' : 'ID 확인'
+				,'content' : 'ID를 입력해주세요'
+				,'btn' : ['close']
+			})
+			return;
+		}
+		let chkId = '';
+		let content = '<code>'+id+'</code> ';
+		function success(respon){
+			if(respon.data.flag){
+				chkId = 'Y';
+				content += '사용가능한 ID입니다.' 
+			} else {
+				chkId = 'N';
+				content += '사용 <code>불가능한</code> ID입니다.' 
+			}
+			$modal.setModal({
+				'title' : 'ID 중복확인'
+				,'content' : content
+				,'btn' : ['confirm','close']
+				,'confirm' : function (e){
+					if(chkId == 'Y'){
+						$el.$('#chkIdBtn').disable();
+					} else {
+					}
+					$modal.close();
+				}
+			})
+			$modal.show();
+		}
+		$cu.axios.get('/chkId',{'id' : id},{ 'success' : success});
+	}
+	
+	function chkForm(){
+		const result = $cu.validate('#singupForm');
+		if(result != true){
+			alert(`[${result}] 을 확인하세요`);
+			return;
+		}
+		let chkId = $el.$('#chkIdBtn').isDisable();
+		if(!chkId){
+			alert('ID 중복확인을 해주세요');
+			return;
+		}
+		let id = $el.$('#id').val();
+		$modal.setModal({
+			'title' : '회원가입'
+			,'content' : '['+id+'] 회원가입 하시겠습니까?'
+			,'btn' : ['confirm','close']
+			,'confirm' : function (e){
+				$el.$('#singupForm').submit();
+			}
+		})
+		$modal.show();
+	}
+	
+</script>
+</head>
+<body class="bg-gradient-primary">
+	<div class="container">
+		<div class="card o-hidden border-0 shadow-lg my-5">
+			<div class="card-body p-0">
+				<!-- Nested Row within Card Body -->
+				<div class="row">
+					<div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+					<div class="col-lg-7">
+						<div class="p-5">
+							<div class="text-center">
+								<h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
+							</div>
+							<form class="user" id="singupForm" th:action th:object="${singupForm}" method="post" novalidate>
+								<div class="form-group row">
+									<div class="col-sm-9 mb-3 mb-sm-0">
+										<input type="text" class="form-control form-control-user"
+											id="id" th:field="*{singupId}" placeholder="ID">
+									</div>
+									<div class="col-sm-3">
+										<button type="button" class="btn btn-primary btn-user"  id="chkIdBtn" onclick="chkLoginId();">중복확인</button>
+									</div>
+								</div>
+								<div class="form-group row">
+									<div class="col-sm-6 mb-3 mb-sm-0">
+										<input type="password" class="form-control form-control-user"
+											id="pass" th:field="*{singupPass}" placeholder="Password">
+									</div>
+									<div class="col-sm-6">
+										<input type="password" class="form-control form-control-user"
+											id="passChk" 
+											placeholder="Repeat Password">
+									</div>
+								</div>
+								<div class="form-group row">
+									<div class="col-sm-6 mb-3 mb-sm-0">
+										<input type="text" class="form-control form-control-user"
+											id="name" th:field="*{singupName}" placeholder="Name">
+									</div>
+								</div>
+								<div class="form-group">
+									<input type="email" class="form-control form-control-user"
+										id="email" th:field="*{singupEmail}" placeholder="Email Address">
+								</div>
+								<button type="button" class="btn btn-primary btn-user btn-block" onclick="chkForm()">Register Account </button>
+								<hr>
+								<!-- <a href="index.html" class="btn btn-google btn-user btn-block">
+                                    <i class="fab fa-google fa-fw"></i> Register with Google
+                                </a>
+                                <a href="index.html" class="btn btn-facebook btn-user btn-block">
+                                    <i class="fab fa-facebook-f fa-fw"></i> Register with Facebook
+                                </a> -->
+							</form>
+							<hr>
+							<div class="text-center">
+								<a class="small" href="forgot-password.html">Forgot Password?</a>
+							</div>
+							<div class="text-center">
+								<a class="small" href="/login">Already have an account? Login!</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:replace="~{common/fragments/modal :: modalFragment}"></div>
+
+</body>
+</html>

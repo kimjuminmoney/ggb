@@ -34,16 +34,46 @@ let _commons = function() {
 		},
 		grid: {
 			//grid 컬럼 생성 함수
-			getCol: function(arr) {
+			getCol: function(ArrObj) {
 				let colArr = []
-				for (let row of arr) {
-					let colObj = {
-						'header': row[0],
-						'name': row[1]
-					};
-					colArr.push(colObj);
+				for(let obj of ArrObj){
+						let colObj= {};
+					for (let key in obj) {
+						colObj['header'] = obj['header'];
+						colObj['name'] = obj['name'];
+						colObj['editor'] = obj['editor'];
+					}
+						colArr.push(colObj);
 				}
 				return colArr;
+			},
+			getHeader : function(grid){
+				let headers = grid.getColumns();
+				let arrHeaders = [];
+				
+				for(let header of headers){
+					let info = {
+						header : header['header']
+						,name : header['name']
+					}
+					arrHeaders.push(info);
+				}
+				return arrHeaders;
+			},
+			init : function(gridStr, opt){
+				
+					console.log(opt)
+				
+				let grid = new $Grid({
+					el: document.getElementById(gridStr)
+					//,scrollX: false
+					//,scrollY: false
+					,bodyHeight: opt['bodyHeight']
+					,rowHeaders : opt['rowHeader']//['checkbox']//
+					,columns : opt['columns']
+					,data : opt['data']
+				})
+				return grid;
 			}
 		},
 		validate: function(elId) {
@@ -88,3 +118,4 @@ let _commons = function() {
 	}
 }
 const $cu = _commons();
+const $Grid = tui.Grid;

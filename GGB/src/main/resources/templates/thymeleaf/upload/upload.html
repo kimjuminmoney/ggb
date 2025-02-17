@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{common/layout/layout}">
+<th:block layout:fragment="content">
+<script type="text/javascript">
+	let grid;
+	
+	
+	$(document).ready(function() {
+		initUpload();
+		initGrid();
+	});
+
+	
+	function initUpload(){
+		let file_select = document.getElementById('file_select');
+		let fileInput = document.getElementById('fileInput');
+		file_select.addEventListener('click', function() {
+			fileInput.click();
+		});
+		
+		fileInput.addEventListener('change',function(){
+			const files = event.target.files;
+			if(files.length > 1){
+				alert('파일은 하나만 업로드 할 수 있습니다.');
+				return
+			}
+			const file = files[0];
+			console.log(file);
+			let fileNameDom = document.getElementById('fileName');
+			let fileSizeDom = document.getElementById('fileSize');
+			let fileSize = $cu.cal.formatFileSize(file.size, 2);
+			console.log(fileSize)
+			fileNameDom.innerHTML = file.name;
+			fileSizeDom.innerHTML = fileSize;
+			
+		})
+		let file_upload = document.getElementById('file_upload');
+		file_upload.addEventListener('click', fileUpload);
+		
+		
+		
+	}
+	
+	async function fileUpload(){
+		let fileInput = document.getElementById('fileInput');
+		const file = fileInput.files[0];
+		if(!file){
+			alert('파일을 선택하세요');
+			return;
+		}
+		let header = JSON.stringify($cu.grid.getHeader(grid));
+		console.log(header)
+		const formData = new FormData();
+		formData.append('file', file);
+		formData.append('paramHeader', header);
+		data = [{
+		    "payment_type": "네이버페이 머니 하나 체크카드",
+		    "type_bot": "월주차비",
+		    "date": "2024-10-01",
+		    "memo": "",
+		    "type_top": "자동차",
+		    "content": "대표일반_나이스",
+		    "amount": "-99000",
+		    "type": "지출",
+		    "time": "13:56",
+		    "currency": "KRW"
+		}]
+		grid.resetData(data)
+		try {
+			const response = await axios.post('/upload', formData,{
+				headers: {
+					'Content-Type' : 'multipart/form-data'
+				},
+				 onUploadProgress: (progressEvent) => {
+					const percentCoompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+					console.log('업로드 진행률: ${percentCompleted}');
+				} 
+			});
+			console.log('업로드 성공 : ', response.data);
+			let data = response.data;
+			console.log(data.data)
+			grid.resetData(data.data)
+		} catch(error){
+			console.error('업로드 실패 : ', error);
+		} 
+		
+	}
+	
+	function initGrid(){
+		let gridColumns = $cu.grid.getCol([
+				{header : '날짜', name : 'date', editor: 'text'}
+				,{header : '시간', name : 'time', editor: 'text'}
+				,{header : '타입', name : 'type', editor: 'text'}
+				,{header : '대분류', name : 'type_top', editor: 'text'}
+				,{header : '소분류', name : 'type_bot', editor: 'text'}
+				,{header : '내용', name : 'content', editor: 'text'}
+				,{header : '금액', name : 'amount', editor: 'text'}
+				,{header : '화폐', name : 'currency', editor: 'text'}
+				,{header : '결제수단', name : 'payment_type', editor: 'text'}
+				,{header : '메모', name : 'memo', editor: 'text'}
+			])
+		//const Grid = tui.Grid;
+		console.log(gridColumns)
+		grid = $cu.grid.init('grid',{
+						bodyHeight: 500
+						,rowHeader : [{ type : 'checkbox', header : ''}]
+						,columns : gridColumns
+						/* ,data : [{
+						    "payment_type": "네이버페이 머니 하나 체크카드",
+						    "type_bot": "월주차비",
+						    "date": "2024-10-01",
+						    "memo": "",
+						    "type_top": "자동차",
+						    "content": "대표일반_나이스",
+						    "amount": "-99000",
+						    "type": "지출",
+						    "time": "13:56",
+						    "currency": "KRW"
+						}] */
+		});
+/* 		grid = new $Grid({
+						el: document.getElementById('grid'),
+						bodyHeight: 500,
+						columns : gridColumns
+		}); */
+		//console.log(grid)
+		
+			
+	}
+
+</script>
+				<!-- Begin Page Content -->
+				<div class="container-fluid" >
+					<div class="d-sm-flex align-items-center justify-content-between mb-4">
+						<h1 class="h3 mb-0 text-gray-800">upload</h1>
+					</div>
+					<div class="row">
+						<div class="col-xl-3 col-md-6 mb-4">
+							<div class="card border-left-primary shadow h-100 py-2">
+								<div class="card-body">
+									<div class="row no-gutters align-items-center">
+										<div class="col mr-2">
+											<div id="fileName"class="text-xs font-weight-bold text-primary text-uppercase mb-1"></div>
+											<div id="fileSize"class="h5 mb-0 font-weight-bold text-gray-800"></div>
+										</div>
+										<div class="col-auto">
+											<i class="fas fa-calendar fa-2x text-gray-300"></i>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					
+					</div>
+						<a id="file_select" class="btn btn-primary btn-icon-split btn-lg" >
+							<!-- <span class="icon text-white-50">
+								<i class="fas fa-flag"></i>
+							</span> -->
+							<span class="text">파일 선택</span>
+							<input type="file" id="fileInput" style="display: none" />
+						</a>
+						<a id="file_upload" class="btn btn-primary btn-icon-split btn-lg" >
+							<!-- <span class="icon text-white-50">
+								<i class="fas fa-flag"></i>
+							</span> -->
+							<span class="text">파일 업로드</span>
+						</a>
+						<div id="grid" style="width: 1000px"></div>
+				</div>
+				<!-- /.container-fluid -->
+</th:block>
+</html>
